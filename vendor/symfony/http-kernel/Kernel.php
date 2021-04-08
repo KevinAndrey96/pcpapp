@@ -74,15 +74,15 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
 
     private static $freshCache = [];
 
-    public const VERSION = '5.2.6';
-    public const VERSION_ID = 50206;
+    public const VERSION = '5.3.0-DEV';
+    public const VERSION_ID = 50300;
     public const MAJOR_VERSION = 5;
-    public const MINOR_VERSION = 2;
-    public const RELEASE_VERSION = 6;
-    public const EXTRA_VERSION = '';
+    public const MINOR_VERSION = 3;
+    public const RELEASE_VERSION = 0;
+    public const EXTRA_VERSION = 'DEV';
 
-    public const END_OF_MAINTENANCE = '07/2021';
-    public const END_OF_LIFE = '07/2021';
+    public const END_OF_MAINTENANCE = '05/2021';
+    public const END_OF_LIFE = '01/2022';
 
     public function __construct(string $environment, bool $debug)
     {
@@ -177,7 +177,7 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
     /**
      * {@inheritdoc}
      */
-    public function handle(Request $request, int $type = HttpKernelInterface::MASTER_REQUEST, bool $catch = true)
+    public function handle(Request $request, int $type = HttpKernelInterface::MAIN_REQUEST, bool $catch = true)
     {
         if (!$this->booted) {
             $container = $this->container ?? $this->preBoot();
@@ -642,6 +642,7 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
         $this->prepareContainer($container);
 
         if (null !== $cont = $this->registerContainerConfiguration($this->getContainerLoader($container))) {
+            trigger_deprecation('symfony/http-kernel', '5.3', 'Returning a ContainerBuilder from "%s::registerContainerConfiguration()" is deprecated.', get_debug_type($this));
             $container->merge($cont);
         }
 
@@ -751,15 +752,16 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
      */
     protected function getContainerLoader(ContainerInterface $container)
     {
+        $env = $this->getEnvironment();
         $locator = new FileLocator($this);
         $resolver = new LoaderResolver([
-            new XmlFileLoader($container, $locator),
-            new YamlFileLoader($container, $locator),
-            new IniFileLoader($container, $locator),
-            new PhpFileLoader($container, $locator),
-            new GlobFileLoader($container, $locator),
-            new DirectoryLoader($container, $locator),
-            new ClosureLoader($container),
+            new XmlFileLoader($container, $locator, $env),
+            new YamlFileLoader($container, $locator, $env),
+            new IniFileLoader($container, $locator, $env),
+            new PhpFileLoader($container, $locator, $env),
+            new GlobFileLoader($container, $locator, $env),
+            new DirectoryLoader($container, $locator, $env),
+            new ClosureLoader($container, $env),
         ]);
 
         return new DelegatingLoader($resolver);

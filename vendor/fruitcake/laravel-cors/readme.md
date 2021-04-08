@@ -73,11 +73,11 @@ php artisan vendor:publish --tag="cors"
 
 | Option                   | Description                                                              | Default value |
 |--------------------------|--------------------------------------------------------------------------|---------------|
-| paths                    | You can enable CORS for 1 or multiple paths, eg. `['api/*'] `            | `array()`     |
-| allowed_origins          | Matches the request origin. Wildcards can be used, eg. `*.mydomain.com`  | `array('*')`  |
-| allowed_origins_patterns | Matches the request origin with `preg_match`.                            | `array()`     |
-| allowed_methods          | Matches the request method.                                              | `array('*')`  |
-| allowed_headers          | Sets the Access-Control-Allow-Headers response header.                   | `array('*')`  |
+| paths                    | You can enable CORS for 1 or multiple paths, eg. `['api/*'] `            | `[]`          |
+| allowed_origins          | Matches the request origin. Wildcards can be used, eg. `*.mydomain.com`  | `['*']`       |
+| allowed_origins_patterns | Matches the request origin with `preg_match`.                            | `[]`          |
+| allowed_methods          | Matches the request method.                                              | `['*']`       |
+| allowed_headers          | Sets the Access-Control-Allow-Headers response header.                   | `['*']`       |
 | exposed_headers          | Sets the Access-Control-Expose-Headers response header.                  | `false`       |
 | max_age                  | Sets the Access-Control-Max-Age response header.                         | `0`           |
 | supports_credentials     | Sets the Access-Control-Allow-Credentials header.                        | `false`       |
@@ -118,9 +118,13 @@ $app->middleware([
 
 ## Common problems
 
+### Wrong config
+
+Make sure the `path` option in the config is correct and actually matches the route you are using. Remember to clear the config cache as well.
+
 ### Error handling, Middleware order
 
-Sometimes errors/middleware that return own responses can prevent the CORS Middleware from being run. Try changing the order of the Middleware and make sure it's the first entry in the global middleware, not a route group. Also check your logs for actual errors, because without CORS, the errors will be swallowed by the browser, only showing CORS errors.
+Sometimes errors/middleware that return own responses can prevent the CORS Middleware from being run. Try changing the order of the Middleware and make sure it's the first entry in the global middleware, not a route group. Also check your logs for actual errors, because without CORS, the errors will be swallowed by the browser, only showing CORS errors. Also try running it without CORS to make sure it actually works.
 
 ### Authorization headers / Credentials
 
@@ -137,10 +141,15 @@ Otherwise you can disable CSRF for certain requests in `App\Http\Middleware\Veri
 
 ```php
 protected $except = [
-    'api/*'
+    'api/*',
+    'sub.domain.zone' => [
+      'prefix/*'
+    ],
 ];
 ```
 
+### Duplicate headres
+The CORS Middleware should be the only place you add these headers. If you also add headers in .htaccess, nginx or your index.php file, you will get duplicate headers and unexpected results.
 
 ## License
 
