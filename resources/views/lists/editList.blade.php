@@ -30,7 +30,7 @@
       <label for="currency">Divisa: </label>
 
       
-      <select class="form-control" name="currency">
+      <select class="form-control" class="form-control" name="currency">
 
         
         <option value="{{ $list->currency }}" selected disabled>{{ $list->currency }}</option>

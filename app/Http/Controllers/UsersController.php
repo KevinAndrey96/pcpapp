@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\PriceList;
 use Facade\Ignition\Http\Controllers\ScriptController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -48,7 +49,10 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $distributorLists = PriceList::where('role', '=', 'Distribuidor')->get(); 
+        $ironmongerLists = PriceList::where('role', '=', 'Ferretero')->get(); 
+
+        return view('users.create',compact('distributorLists','ironmongerLists'));
     }
 
     /**
@@ -69,30 +73,56 @@ class UsersController extends Controller
             'email' => 'required|email',
             'country' => 'required|string|max:40',
             'city' => 'required|string|max:40',
-            'role' => 'required|string|max:20',
             'establishment_name' => 'required|string|max:100',
+            'password' => 'required',
 
          ];
 
          $message = ["required" => "El campo :attribute es requerido"];
 
          $this -> validate($request, $fields, $message);
+        
+         if($request->role == "Distribuidor"){
 
-        $userData = request()->except('_token');
+            $userData = request()->except('_token');
 
+            
         if ($request->hasFile('image')) {
             $userData['image'] = $request->file('image')->store('images','public');
         }
 
         $userData['password'] = Hash::make($request->input('password'));
+        User::insert($userData);  
 
-        User::insert($userData);    
-        
+        }elseif($request->role == "Ferretero"){
+
+            $userData = request()->except('_token');
+
+            if ($request->hasFile('image')) {
+                $userData['image'] = $request->file('image')->store('images','public');
+            }
+
+            $userData['password'] = Hash::make($request->input('password'));
+            User::insert($userData);  
+
+        }else{
+            
+            $userData = request()->except(['_token','price_list_id']);
+
+            if ($request->hasFile('image')) {
+                $userData['image'] = $request->file('image')->store('images','public');
+            }
+            $userData['password'] = Hash::make($request->input('password'));
+            User::insert($userData);    
+       
         }
-
-
-        return redirect('/home');
+       return redirect('/users/create')->with('messageSuccess','Usuario registrado con éxito');
     }
+        
+      
+     //return redirect('users.index',$role='all')->with('message','Usuario registrado con éxito');
+    }
+
 
     /**
      * Display the specified resource.
@@ -131,13 +161,40 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-       
-        $userData = request()->except(['_token','_method']);
-        $userData['password'] = Hash::make($request->input('password'));
-        User::where('id','=',$id)->update($userData);
 
-        return redirect('home')->with('Mensaje','Empleado Modificado con éxito');
+        if(Auth::user()->role=='Administrador'){
+
+            if(isset($request->password)==false){
+
+                $userData = request()->except(['_token','_method','password']);
+
+                if ($request->hasFile('image')) {
+                    $userData['image'] = $request->file('image')->store('images','public');
+                }
+        
+                User::where('id','=',$id)->update($userData);
+                return redirect('/users/'.$id.'/edit')->with('messageSuccess','Empleado Modificado con éxito'); 
+
+
+            }else{
+
+                $userData = request()->except(['_token','_method']);
+
+                if($request->hasFile('image')){
+                    $userData['image'] = $request->file('image')->store('images','public');
+                }
+        
+                $userData['password'] = Hash::make($request->input('password'));
+                User::where('id','=',$id)->update($userData);
+        
+                return redirect('/users/'.$id.'/edit')->with('messageSuccess','Empleado Modificado con éxito'); 
+
+
+            }
+       
+       
+
+    }
 
     }
 

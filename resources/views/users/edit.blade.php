@@ -2,6 +2,20 @@
 
 @section('content')
 
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    
+  @if(Session::has('messageSuccess'))
+
+    <div class="alert alert-success" role="alert">
+
+      {{ Session::get('messageSuccess') }}
+
+    </div>
+  
+  @endif
+      
+</div>
+
 <div class="card">
   <div class="card-header">
     Editar Usuario
@@ -24,9 +38,9 @@
     </div>
     <div class="form-group">
       <label for="country">País: </label>
-      <select name="country">
-
-        <option value="Colombia" selected>Colombia</option>
+      <select class="form-control" name="country">
+        <option value="{{ $user->country }}" selected disabled>{{ $user->country}}</option>
+        <option value="Colombia" >Colombia</option>
         <option value="Peru">Perú</option>
         <option value="Mexico">Mexico</option>
 
@@ -38,9 +52,9 @@
     </div>
     <div class="form-group">
       <label for="role">Rol: </label>
-      <select name="role">
-
-        <option value="Administrador" selected>Administrador</option>
+      <select class="form-control" name="role">
+        <option value="{{ $user->role }}" selected disabled>{{ $user->role }}</option>
+        <option value="Administrador">Administrador</option>
         <option value="Distribuidor">Distribuidor</option>
         <option value="Ferretero">Ferretero</option>
 

@@ -44,10 +44,19 @@ class PriceListController extends Controller
     public function store(Request $request) 
     {  
 
-        $listData = request()->except('_token');
+        $fields = [
+
+            'name' =>'required|string|max:100',
+            
+        ];
+
+        $message = ["required" => "El campo :attribute es requerido"];
+        $this -> validate($request, $fields, $message);
+        
+         $listData = request()->except('_token');
         PriceList::insert($listData);  
 
-        return view('home');
+        return redirect('/list/createList?role='.$request->role)->with('messageSuccess','Lista registrada con éxito');
     }
 
     /**

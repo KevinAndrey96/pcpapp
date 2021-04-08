@@ -2,14 +2,32 @@
 
 @section('content')
 
-@if(Session::has('message'))
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    
+  @if(Session::has('messageSuccess'))
 
- <div class="alert alert-success" role="alert">
+    <div class="alert alert-success" role="alert">
+
+      {{ Session::get('messageSuccess') }}
+
+    </div>
+  
+  @endif
       
-      {{Session::get('message')}}
- 
- </div>
-   
+</div>
+
+@if(count($errors)>0)
+
+  <div class="alert alert-danger" role="alert">
+    <ul>
+
+       @foreach($errors->all() as $error)
+          <li>{{ $error }}</li> 
+        @endforeach
+
+    </ul>
+  </div>
+
 @endif
 
 
@@ -27,10 +45,10 @@
     </div>
     <div class="form-group">
       <label for="currency">Divisa: </label>
-      <select name="currency">
+      <select class="form-control" name="currency">
 
-        <option value="USD" selected>USD</option>
-        <option value="COP">COP</option>
+        <option value="USD">USD</option>
+        <option value="COP" selected>COP</option>
         <option value="MXN">MXN</option>
         <option value="PEN">PEN</option>
 
@@ -39,7 +57,7 @@
   
     <div class="form-group">
       <label for="country">País: </label>
-      <select name="country">
+      <select class="form-control" name="country">
 
         <option value="Colombia" selected>Colombia</option>
         <option value="Peru">Perú</option>

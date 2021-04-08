@@ -1,15 +1,34 @@
 @extends('layouts.dashboard')
 
 @section('content')
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    
+  @if(Session::has('messageSuccess'))
 
-@if(Session::has('message'))
+    <div class="alert alert-success" role="alert">
 
- <div class="alert alert-success" role="alert">
+      {{ Session::get('messageSuccess') }}
+
+    </div>
+  
       
-      {{Session::get('message')}}
- 
- </div>
-   
+  
+  @endif
+      
+</div>
+
+@if(count($errors)>0)
+
+  <div class="alert alert-danger" role="alert">
+    <ul>
+
+       @foreach($errors->all() as $error)
+          <li>{{ $error }}</li> 
+        @endforeach
+
+    </ul>
+  </div>
+
 @endif
 
 

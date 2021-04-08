@@ -186,7 +186,7 @@
                 <div id="collapsePages3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                
-                        <a class="collapse-item" href="#">Ver</a>
+                        <a class="collapse-item" href="{{ url('/distributors') }}">Ver</a>
                         
                     </div>
                 </div>
@@ -219,7 +219,7 @@
                 <div id="collapsePages3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                
-                        <a class="collapse-item" href="#">Ver</a>
+                        <a class="collapse-item" href="{{ url('/ironmongers') }}">Ver</a>
                         
                     </div>
                 </div>
@@ -302,7 +302,9 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name }}, {{ Auth::user()->role }} </span>
                                 <img class="img-profile rounded-circle"
-                                    src="/dash/img/undraw_profile.svg">
+                                    src="{{ isset(Auth::user()->image) ? '/storage/'.Auth::user()->image : '/dash/img/undraw_profile.svg' }}">
+                            
+                           
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

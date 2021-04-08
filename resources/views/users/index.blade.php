@@ -1,8 +1,7 @@
 @extends('layouts.dashboard')
 @section('content')
-<style>
 
-</style>
+
 
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -38,14 +37,14 @@
                 <td>{{$admin->establishment_name}}</td>
                 <td>
                     
-                    <a class="btn btn-warning" href="{{ url('/users/'.$admin->id.'/edit') }}">Editar</a>
+                    <a class="btn btn-warning" href="{{ url('/users/'.$admin->id.'/edit') }}" style="margin:3px">Editar</a>
                     
 
                     <form method="post" action="{{ url('/users/'.$admin->id) }}" >
                         {{csrf_field()}}
                         {{method_field('DELETE')}}
                         
-                        <button class = "btn btn-danger" type="submit" onclick="return confirm('¿Borrar?');">Borrar</button>
+                        <button class = "btn btn-danger" type="submit" onclick="return confirm('¿Borrar?');" style="margin:3px">Borrar</button>
                     
                     </form>
                

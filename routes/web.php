@@ -41,3 +41,10 @@ Route::delete('lists/{id}', [App\Http\Controllers\PriceListController::class, 'd
 Route::get('/products/{id}', [App\Http\Controllers\ProductsController::class, 'index'])->middleware('auth');
 Route::get('/products/create/{id}', [App\Http\Controllers\ProductsController::class, 'create'])->middleware('auth');
 Route::post('/products', [App\Http\Controllers\ProductsController::class, 'store'])->middleware('auth');
+Route::get('/products/{id}/edit', [App\Http\Controllers\ProductsController::class, 'edit'])->middleware('auth');
+Route::match(['put','patch'], '/products/{product}', [App\Http\Controllers\ProductsController::class, 'update'])->middleware('auth'); 
+Route::delete('products/{id}', [App\Http\Controllers\ProductsController::class, 'destroy'])->middleware('auth');
+Route::get('/distributors', [App\Http\Controllers\ProductsController::class, 'productsDistriIron'])->middleware('auth');
+Route::get('/ironmongers', [App\Http\Controllers\ProductsController::class, 'productsDistriIron'])->middleware('auth'); 
+Route::get('exportProducts/{id}', [App\Http\Controllers\ProductsController::class, 'export'])->middleware('auth'); 
+Route::post('importProducts/{id}', [App\Http\Controllers\ProductsController::class, 'import'])->middleware('auth');   
